@@ -1,0 +1,124 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Artist{% endblock %}
+
+{% block body %}
+    <h1>{{ artist.name }}</h1>
+    <a href="{{ app.request.headers.get('referer') }}" class="btn white-text">back to list</a>
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Wiki</th>
+                <td><a href="{{ wiki }}">{{ artist.name }}</a></td>
+            </tr>
+            <tr>
+                <th>Country</th>
+                <td>{{ artist.country }}</td>
+            </tr>
+            <tr>
+                <th>Style</th>
+                <td>{{ artist.style }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ artist.description }}</td>
+            </tr>
+            <tr>
+                <th><a id="disc" value="{{ artist.id }}" class="white-text" style="cursor: pointer">Discography<i id="drop-it-down" class="material-icons right">keyboard_arrow_right</i></a>
+</th>
+                <table id='table-hidden' class='table hidden'>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>ProductionDate</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id='body-t'>
+
+        </tbody>
+    </table>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3 class="center">Same Style Artist</h3>
+    <hr>
+    <div class="carousel carousel-slider" style="height:300px">
+    {% for sameStyleArtist in sameStyleArtists %}
+    <div class="carousel-item center">
+                <h4>{{ sameStyleArtist.name }}</h4>
+                <p>{{ sameStyleArtist.country }}</p>
+                <p>{{ sameStyleArtist.description }}</p>
+                <div class="center">
+                    <a href="{{ path('artist_show', {'id': sameStyleArtist.id}) }}" class="btn white-text">MORE</a>
+                </div>
+                <hr>
+            </div>
+    {% endfor %}
+</div>
+    
+
+    {% if is_granted("ROLE_ADMIN") %}
+    
+    <div>
+    <a href="{{ path('artist_edit', {'id': artist.id}) }}" class="btn white-text">edit</a>
+    
+    {{ include('artist/_delete_form.html.twig') }}</div>
+    {% endif %}
+{% endblock %}
+
+
+
+{% block javascripts %}
+<script>
+        $("#disc").click(function () {
+        
+        $("#drop-it-down").toggleClass("rotation")
+        var userId = $("#disc").val();
+        var data = {
+            name: "value",
+            value: userId
+        };
+        $.post("{{ path('ajax_artist', {'id': artist.id})}}", data, function (string) {
+
+            $("#body-t").html("")
+            $("#table-hidden").fadeToggle(500)
+            for (let index = 0; index < string.length; index++) {
+                var prodId = string[index]["prodId"];
+
+                var link = "<a href='"+prodId+"' class='btn white-text'>show</a>";
+                $("#body-t").append("<tr><td>"+string[index]["title"]+"</td><td>"+string[index]["prodDate"]+"</td><td>"+string[index]["desc"]+"</td><td>"+link+"</td></tr>"); 
+            }
+        });
+
+        })
+
+</script>
+
+<script>
+            // CAROUSEL
+
+
+$(document).ready(function(){
+  $('.carousel').carousel(
+  {
+    dist: 0,
+    fullWidth: true,
+    duration: 100,
+  }
+  );
+  autoplay()  
+ 
+function autoplay() {
+    $('.carousel').carousel('next');
+    setTimeout(autoplay, 4500);
+}
+});
+
+
+
+    </script>
+
+{% endblock %}

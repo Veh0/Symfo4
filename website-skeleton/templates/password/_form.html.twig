@@ -1,0 +1,22 @@
+{{ form_start(form) }}
+
+<div class="input-field">
+        {{ form_widget(form.password, { 'attr': { 'id': 'password', 'name': 'oldpassword' }}) }}
+        {{ form_label(form.password, 'Old Password', { 'label_attr': { 'for': 'password' }}) }}
+</div>
+<div class="row col s12">
+    <div class="input-field col s6">
+        {{ form_widget(form.newPassword, { 'attr': {'id': 'newpassword', 'name': 'newpassword'} }) }}
+        {{ form_label(form.newPassword, 'New Password', { 'label_attr': { 'for': 'newpassword' }}) }}
+    </div>
+    <div class="input-field col s6">
+        {{ form_widget(form.newPasswordConfirm, { 'attr': {'id': 'newpasswordConfirm', 'name': 'newpasswordConfirm'} }) }}
+        {{ form_label(form.newPasswordConfirm, 'New Password Confirm', { 'label_attr': { 'id': 'lblnewPasswordConfirm','for': 'newpasswordConfirm' }}) }}
+        <span class="helper-text" data-error="wrong" data-success="right">Helper text</span>
+    </div>
+</div>
+
+<button class="btn">{{ button_label|default('Save') }}</button>
+
+{{ form_end(form) }}
+

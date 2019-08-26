@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Product index{% endblock %}
+
+{% block body %}
+    <h1>Product index</h1>
+
+    <table class="table" id="myTable">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>ProductionDate</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for product in products %}
+            <tr>
+                <td>{{ product.title }}</td>
+                <td>{{ product.productionDate }}</td>
+                <td>{{ product.description }}</td>
+                <td>
+                    <a href="{{ path('product_show', {'id': product.id}) }}" class="btn white-text">show</a>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <a href="{{ path('product_edit', {'id': product.id}) }}" class="btn white-text">edit</a>
+                    {% endif %}
+                </td>
+                
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="col-md-12 center text-center">
+	    <span class="left" id="total_reg"></span>
+        <ul class="pagination pager" id="myPager"></ul>
+    </div>
+    {% if is_granted('ROLE_ADMIN') %}
+        <a href="{{ path('product_new') }}" class = 'btn'>Create new</a>
+    {% endif %}
+
+{% endblock %}
+
+{% block javascripts %}
+
+<script>
+
+    $(document).ready(function(){
+  $('#myTable').pageMe({
+    pagerSelector:'#myPager',
+    activeColor: 'teal',
+    prevText:'Anterior',
+    nextText:'Siguiente',
+    showPrevNext:true,
+    hidePageNumbers:false,
+    perPage:10
+  });
+});
+
+</script>
+
+{% endblock %}

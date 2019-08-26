@@ -1,0 +1,80 @@
+<nav class="nav-extended deep-purple">
+    <div class="nav-wrapper">
+      <a href="{{ path('home') }}" class="brand-logo">Logo</a>
+      <ul class="right hide-on-med-and-down">
+        <li><a href="{{ path('artist_index') }}">Artist</a></li>
+        <li><a href="{{ path('product_index') }}">Products</a></li>
+        <li><a href="{{ path('event_index') }}">Event</a></li>
+        <li><a href="{{ path('actu_index') }}">Actuality</a></li>
+        {% if app.user %}
+          <li>Hi, {{ app.user.username }} !</li>
+        {% else %}
+          <li><a href="{{ path('app_login') }}">Login</a></li>
+        {% endif %}
+        
+
+      </ul>
+    </div>
+    <div class="nav-content">
+      <span class="nav-title">{{page_title}}</span>
+      
+      
+    </div>
+  </nav>
+{% if app.user %}
+
+<ul id="slide-out" class="sidenav">
+    <li><div class="user-view">
+      <div class="background">
+        <img id="side-img" src="{{ asset ('img/sidenav.jpg') }}">
+      </div>
+      <a href="#"><img class="circle" src="{{ asset ('img/user.jpg') }}"></a> 
+      <a href="#"><span class="white-text name">{{ app.user.username }}</span></a>
+      <a href="#"><span class="white-text email">{{app.user.mail}}</span></a>
+    </div></li>
+    <li><a href="{{ path('user_sub', { id : app.user.id }) }}">Subscriptions</a></li>
+    <li><a href="#!">Commands</a></li>
+    <li><div class="divider"></div></li>
+    <li><a class="subheader disable">Profile</a></li>
+    <li><a class="waves-effect" href="{{ path('user_edit', { id : app.user.id }) }}">Edit</a></li>
+    
+    {% if is_granted("ROLE_ADMIN") %}
+      <li><a class="waves-effect" href="{{ path('user_index') }}">User List</a></li>
+    {% endif %}
+    
+    <li><a class="waves-effect" href="{{ path('app_logout') }}">Logout</a></li>
+  </ul>
+<a data-target="slide-out" class="btn-floating btn-large halfway-fab waves-effect waves-light sidenav-trigger" translate="no">
+        <i class="material-icons" >account_circle</i>
+      </a>
+{% endif %}
+
+{% block stylesheets %}
+
+<style>
+    nav {
+        padding: .5% 1%;
+        margin-bottom: 2%
+    }
+
+    .btn-floating.btn-large.halfway-fab {
+    top: 145px;
+    }
+
+    div.background {
+      background-size: cover!important 
+    }
+
+    
+</style>
+
+{% endblock %}
+
+{% block script %}
+    <script>
+            document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('.sidenav');
+    var instances = M.Sidenav.init(elems, { edge: 'left'});
+  });
+    </script>
+{% endblock script %}

@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Actu{% endblock %}
+
+{% block body %}
+<h1>Actu</h1>
+<a href="{{ app.request.headers.get('referer') }}" class="btn white-text">back to list</a>
+<div class="center">
+<h2>{{ actu.title }}</h2>
+{{ actu.img | figure (actu.description)| raw }}
+</div>
+{% if  actu_id is null  %}
+    <button id ="sub-btn" class="btn-floating halway-fab" style="background-color: #9a9a9a" name="sub" value="follow"><i
+            class="material-icons">brightness_5</i></button>
+{% else %}
+    <button id ="sub-btn" class="btn-floating halway-fab" name="sub" value="unfollow"><i
+            class="material-icons">brightness_7</i></button>
+{% endif %}
+
+
+{% if is_granted("ROLE_ADMIN") %}
+
+<div><a href="{{ path('actu_edit', {'id': actu.id}) }}" class="btn white-text">edit</a>
+
+
+{{ include('actu/_delete_form.html.twig') }}</div>
+{% endif %}
+{% endblock %}
+
+
+{% block javascripts %}
+<script>
+    $("#sub-btn").click(function () {
+        var sub = $("#sub-btn").val();
+        var data = {
+            name: "value",
+            value: sub
+        };
+        $.post("{{ path('ajax_actu', {'id': actu.id})}}", data, function (string) {
+            console.log(string)
+            if (string == "follow") {
+
+                $("#sub-btn").css('background-color', 'teal');
+                $("#sub-btn").val('unfollow');
+                $("#sub-btn").html("<i class='material-icons'>brightness_7</i>")
+            } else if (string == "unfollow"){
+
+                $("#sub-btn").css('background-color', '#9a9a9a');
+                $("#sub-btn").val('follow');
+                $("#sub-btn").html("<i class='material-icons'>brightness_5</i>")
+            } 
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" name="google" content="notranslate">
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
+   integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+   crossorigin=""/>
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        
+        <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+        <script type="text/javascript" src="https://cdn.rawgit.com/pinzon1992/materialize_table_pagination/f9a8478f/js/pagination.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+        <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
+   integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
+   crossorigin=""></script>
+
+    <body class="grey darken-4">
+        
+        {% include "navbar.html.twig" %}
+        <main >
+        {% block body %}{% endblock %}
+        </main>
+        {% block stylesheets %}
+            <style>
+                main {
+                    width: 80%;
+                    margin: 5% auto;
+                    color: whitesmoke!important
+                }
+
+                form input {
+                    color: whitesmoke
+                }
+
+                .pagination li.active a {
+                    background: teal
+                }
+
+                td a {
+                    color: teal!important
+                }
+
+                main .btn {
+                    margin: 1% 0
+                }
+                .carousel {
+                    position: relative!important
+                }
+
+                .carousel.carousel-slider .carousel-item {
+                    min-height: 300px
+                }
+
+                .carousel-text {
+                    padding: .5% 2%;
+                    background-color: rgba(0, 0, 0, 0.6);
+                    position: absolute;
+                    bottom: 0;
+                    display: block;
+                    width: 100%;
+                }
+
+                td, tr {
+                    color: whitesmoke!important
+                }
+
+                .hidden {
+                    display: none;
+                }
+
+                #drop-it-down {
+                    transition-duration: .6s
+                }
+            .rotation {
+                transform: rotate(90deg);
+                transition-duration: .6s
+            }
+            </style>
+        {% endblock %}
+        {% block javascripts %}
+        
+        {% endblock %}
+    </body>
+</html>
+
+

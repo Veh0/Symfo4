@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Password{% endblock %}
+
+{% block body %}
+    <h1>Edit Password</h1>
+    <a href="{{ path('user_index') }}" class="btn white-text">back to list</a>
+    {{ include('password/_form.html.twig', {'button_label': 'Update'}) }}
+
+
+    
+
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    $("#pwd_newPassword").on("focusout", function (e) {
+        if ($(this).val() != $("#pwd_newPasswordConfirm").val()) {
+            $("#pwd_newpasswordConfirm").removeClass("valid").addClass("invalid");
+        } else {
+            $("#pwd_newpasswordConfirm").removeClass("invalid").addClass("valid");
+        }
+    });
+
+    $("#pwd_newPasswordConfirm").on("keyup", function (e) {
+        if ($("#pwd_newPassword").val() != $(this).val()) {
+            $(this).removeClass("valid").addClass("invalid");
+        } else {
+            $(this).removeClass("invalid").addClass("valid");
+        }
+    });
+</script>
+{% endblock %}

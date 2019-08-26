@@ -1,0 +1,41 @@
+{{ form_start(form) }}
+    <div class="input-field">
+        {{ form_widget(form.title, { 'attr': { 'id': 'title'} }) }}    
+        {{ form_label(form.title, 'Title', { 'label_attr': {'for': 'title'} }) }}
+    </div>
+    <div class="row col s12">
+        <div class="input-field col s6">
+            {{ form_widget(form.productionDate, { 'attr': { 'id': 'production_date', 'class': 'datepicker'} }) }}
+            {{ form_label(form.productionDate,'Production Date', { 'label_attr': {'for': 'production_date' } }) }}
+        </div>
+        <div class="input-field col s6">
+            {# <input type="text" id='production_time' class='timepicker'>
+            <label for="production_time">Production Time</label> #}
+            {{ form_widget(form.productionH, { 'attr': { 'id': 'production_time', 'class': 'timepicker'} }) }}
+            {{ form_label(form.productionH,'Production Time', { 'label_attr': {'for': 'production_time' } }) }}
+        </div>
+    </div>
+    <div class="input-field">
+        {{ form_widget(form.description, { 'attr': { 'id': 'description'} }) }}
+        {{ form_label(form.description, 'Description',{ 'label_attr': { 'for': 'description'} }) }}
+    </div>
+    <div class="input-field">
+        {{ form_label(form.artist_id) }}
+        {{ form_widget(form.artist_id, { 'attr': {'class': 'browser-default'} }) }}
+    </div>
+    <button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_end(form) }}
+
+
+{% block javascripts %}
+    <script>
+
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('.datepicker');
+    var instances = M.Datepicker.init(elems, {firstDay:1});
+  });
+
+
+    </script>
+{% endblock %}

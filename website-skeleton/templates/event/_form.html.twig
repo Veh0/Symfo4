@@ -1,0 +1,64 @@
+{{ form_start(form) }}
+    
+    <div class="input-field">
+      {{ form_widget(form.type, { 'attr': { 'id': 'type' }}) }}
+      {{ form_label(form.type, 'Type', { 'label_attr': { 'for': 'type' }}) }}
+    </div>
+    <div class="row col s12">
+    <div class="input-field col s6">
+      {{ form_widget(form.startDate, { 'attr': {'id': 'start_date', 'class': 'datepicker'} }) }}
+      {{ form_label(form.startDate, 'Start Date', { 'label_attr': { 'for': 'start_date' }}) }}
+    </div>
+    <div class="input-field col s6">
+      {{ form_widget(form.startH, { 'attr': {'id': 'start_H', 'class': 'timepicker'} }) }}
+      {{ form_label(form.startH, 'Start H', { 'label_attr': { 'for': 'start_H' }}) }}
+      </div>
+    </div>
+    <div class="row col s12">
+    <div class="input-field col s6">
+    {{ form_widget(form.endDate, { 'attr': {'id': 'end_date', 'class': 'datepicker'} }) }}
+    {{ form_label(form.endDate, 'End Date', { 'label_attr': { 'for': 'end_date' }}) }}
+    </div>
+    <div class="input-field col s6">
+      {{ form_widget(form.endH, { 'attr': {'id': 'end_H', 'class': 'timepicker'} }) }}
+      {{ form_label(form.endH, 'end H', { 'label_attr': { 'for': 'end_H' }}) }}
+      </div>
+    </div>
+    <div class="input-field">
+    {{ form_widget(form.place, { 'attr': { 'id': 'place' }}) }}
+    {{ form_label(form.place, 'Place', { 'label_attr': { 'for': 'place' }}) }}
+    </div>
+    <div class="input-field">
+    {{ form_widget(form.city,{ 'attr': { 'id': 'city' }}) }}
+    {{ form_label(form.city, 'City', { 'label_attr': { 'for': 'city' }}) }}
+    </div>
+    {{ form_label(form.artist_id, 'Artiste') }}
+    {{ form_widget(form.artist_id, { 'attr': { 'id':'artiste', 'class': 'browser-default'}}) }}
+    <div class="input-field">
+    {{ form_widget(form.description, { 'attr': { 'id': 'description' }}) }}
+    {{ form_label(form.description, 'Description', { 'label_attr': { 'for': 'description' }}) }}
+    </div>
+    <div class="input-field">
+    {{ form_widget(form.price, { 'attr': { 'id': 'price' }}) }}
+    {{ form_label(form.price, 'Price', { 'label_attr': { 'for': 'price' }}) }}
+    </div>
+ 
+    <button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_end(form) }}
+
+{% block javascripts %}
+    <script>
+
+            document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('.datepicker');
+    var instances = M.Datepicker.init(elems, { firstDay: 1});
+  });
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('.timepicker');
+    var instances = M.Timepicker.init(elems, {twelveHour: false});
+  });
+
+    </script>
+{% endblock %}
+

@@ -1,0 +1,43 @@
+{{ form_start(form) }}
+    <div class="input-field">
+        {{ form_widget(form.pseudo, { 'attr': { 'id': 'pseudo'} }) }}    
+        {{ form_label(form.pseudo, 'Pseudo', { 'label_attr': {'for': 'pseudo'} }) }}
+    </div>
+
+    <div class="input-field">
+        {{ form_widget(form.firstname, { 'attr': { 'id': 'firstname'} }) }}    
+        {{ form_label(form.firstname, 'Firstname', { 'label_attr': {'for': 'firstname'} }) }}
+    </div>
+
+    <div class="input-field">
+        {{ form_widget(form.lastname, { 'attr': { 'id': 'lastname'} }) }}    
+        {{ form_label(form.lastname, 'Lastname', { 'label_attr': {'for': 'lastname'} }) }}
+    </div>
+
+    <div class="input-field">
+        {{ form_widget(form.mail, { 'attr': { 'id': 'mail'} }) }}    
+        {{ form_label(form.mail, 'Mail', { 'label_attr': {'for': 'mail'} }) }}
+    </div>
+
+    <div class="input-field">
+        {{ form_widget(form.phone, { 'attr': { 'id': 'phone'} }) }}    
+        {{ form_label(form.phone, 'Phone', { 'label_attr': {'for': 'phone'} }) }}
+    </div>
+
+    <div class="input-field">
+        {{ form_widget(form.address, { 'attr': { 'id': 'address'} }) }}    
+        {{ form_label(form.address, 'Address', { 'label_attr': {'for': 'address'} }) }}
+    </div>
+
+    <div class="input-field">
+        {{ form_widget(form.postalCode, { 'attr': { 'id': 'postalCode'} }) }}    
+        {{ form_label(form.postalCode, 'Postal Code', { 'label_attr': {'for': 'postalCode'} }) }}
+    </div>
+
+    <div class="input-field">
+        {{ form_widget(form.city, { 'attr': { 'id': 'city'} }) }}    
+        {{ form_label(form.city, 'City', { 'label_attr': {'for': 'city'} }) }}
+    </div>
+
+    <button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_end(form) }}

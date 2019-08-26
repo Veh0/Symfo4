@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Actu index{% endblock %}
+
+{% block body %}
+    <h1>Actu index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for actu in actus %}
+            <tr>
+                <td>{{ actu.title }}</td>
+                <td>{{ actu.description }}</td>
+                <td>
+                    <a href="{{ path('actu_show', {'id': actu.id}) }}" class="btn white-text">show</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {% endblock %}

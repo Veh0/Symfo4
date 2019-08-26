@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Event{% endblock %}
+
+{% block body %}
+    <h1>Edit Event</h1>
+    <a href="{{ path('event_index') }}" class="btn white-text">back to list</a>
+    {{ include('event/_form.html.twig', {'button_label': 'Update'}) }}
+
+    
+
+    {{ include('event/_delete_form.html.twig') }}
+{% endblock %}
+
+
+{% block javascripts %}
+    <script>
+    $("#newpassword").on("focusout", function (e) {
+        if ($(this).val() != $("#newpasswordConfirm").val()) {
+            $("#newpasswordConfirm").removeClass("valid").addClass("invalid");
+        } else {
+            $("#newpasswordConfirm").removeClass("invalid").addClass("valid");
+        }
+    });
+
+    $("#newpasswordConfirm").on("keyup", function (e) {
+        if ($("#newpassword").val() != $(this).val()) {
+            $(this).removeClass("valid").addClass("invalid");
+        } else {
+            $(this).removeClass("invalid").addClass("valid");
+        }
+    });
+</script>
+{% endblock %}

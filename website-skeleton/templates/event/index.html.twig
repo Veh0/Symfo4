@@ -1,0 +1,81 @@
+
+
+{% extends 'base.html.twig' %}
+
+
+{% block title %}Event index{% endblock %}
+
+{% block body %}
+
+    <h1>Event index</h1>
+    <table class="table" id="myTable">
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th>Artist</th>
+                <th>StartDate</th>
+                <th>EndDate</th>
+                <th>Place</th>
+                <th>City</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for event in events %}
+            <tr>
+                <td>{{ event.type }}</td>
+                <td>{{ event.artistId }}</td>
+                <td>{{ event.startDate }}</td>
+                <td>{{ event.endDate }}</td>
+                <td>{{ event.place }}</td>
+                <td>{{ event.city }}</td>
+                <td>{{ event.description }}</td>
+                <td>{{ event.price }}$</td>
+                
+                <td>
+                    <a href="{{ path('event_show', {'id': event.id}) }}" class="btn white-text"><em>show</em></a>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <a href="{{ path('event_edit', {'id': event.id}) }}" class="btn white-text"><em>edit</em></a>
+                    {% endif %}
+                </td>
+                
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="9">no records found</td>
+            </tr>
+        {% endfor %}
+            
+        </tbody>
+    </table>
+    <div class="col-md-12 center text-center">
+        <span class="left" id="total_reg"></span>
+        <ul class="pagination pager" id="myPager"></ul>
+    </div>
+    {% if is_granted('ROLE_ADMIN') %}
+        <a href="{{ path('product_new') }}" class="btn">Create new</a>
+    {% endif %}
+
+{% endblock %}
+
+{% block javascripts %}
+
+<script>
+
+    $(document).ready(function(){
+  $('#myTable').pageMe({
+    pagerSelector:'#myPager',
+    activeColor: 'teal',
+    prevText:'Anterior',
+    nextText:'Siguiente',
+    showPrevNext:true,
+    hidePageNumbers:false,
+    perPage:5
+  });
+});
+
+</script>
+
+{% endblock %}
