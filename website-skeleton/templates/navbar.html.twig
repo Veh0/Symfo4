@@ -32,6 +32,13 @@
       <a href="#"><span class="white-text name">{{ app.user.username }}</span></a>
       <a href="#"><span class="white-text email">{{app.user.mail}}</span></a>
     </div></li>
+
+    {% if is_granted("ROLE_ADMIN") %}
+    <li><div class="divider"></div></li>
+    <li><a href="{{ path('admin_index') }}">Admin Page</a></li>
+    <li><div class="divider"></div></li>
+    {% endif %}
+    
     <li><a href="{{ path('user_sub', { id : app.user.id }) }}">Subscriptions</a></li>
     <li><a href="#!">Commands</a></li>
     <li><div class="divider"></div></li>
