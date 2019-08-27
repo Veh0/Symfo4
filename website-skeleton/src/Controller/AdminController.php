@@ -2,17 +2,18 @@
 
 namespace App\Controller;
 
+
 use App\Repository\AdminRepository;
 use App\Repository\UserRepository;
 use App\Repository\ArtistRepository;
 use App\Repository\EventRepository;
 use App\Repository\ProductRepository;
 use App\Repository\ActuRepository;
-use App\Entity\Artist;
-use App\Form\AdminType;
+
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -21,14 +22,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
  */
 class AdminController extends AbstractController {
 
+    private $args = [];
+    private $entity;
+    private $joinEntity;
+
     /**
      * @Route("/", name="admin_index", methods={"GET"})
      */
-    public function index(Request $request, AdminRepository $admin, UserRepository $user, ArtistRepository $artist, EventRepository $event, ProductRepository $product, ActuRepository $actu) {
+    public function index(Request $request, AdminRepository $admin, UserRepository $user, ArtistRepository $artist, EventRepository $event, ProductRepository $product, ActuRepository $actu) : Response {
 
-        $art = new Artist();
-        $form = $this->createForm(AdminType::class, $art);
-        $form->handleRequest($request);
 
         $entityManager= $this -> getDoctrine() -> getManager();
         /* $query = $entityManager -> createQuery('SELECT a, e.place, e.type, e.description, e.city, e.price, COUNT(e.id) as nbe FROM App\Entity\Artist a JOIN a.events e GROUP BY a.id');
@@ -61,8 +63,29 @@ class AdminController extends AbstractController {
             'actu' => $actu -> findAll(),
             'event_artist' =>$artistsMoreEvent,
             'prod_artist' => $artistsProduct,
-            'form' => $form->createView()
         ]);
     }
 
+    /**
+     * @Route("/ajax", name="admin_ajax", methods={"GET", "POST"})
+     */
+    public function ajaxTable(Request $request) {
+        
+        $enti = $request -> request -> get('value');
+
+        $class = new $enti;
+
+        if(method_exists($class, "getCollection"));
+
+        $collection = $class -> getCollection();
+
+        var_dump($collection);die;
+
+        $entityManager= $this -> getDoctrine() -> getManager();
+        $entity = $entityManager->getClassMetadata($enti)->getColumnNames();
+        
+        
+
+    return new JsonResponse($entity);
+    }
 }

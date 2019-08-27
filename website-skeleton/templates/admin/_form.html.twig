@@ -1,4 +1,78 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
-{{ form_end(form) }}
+<form method="POST" id="admin_form">
+
+<div class="row">
+    <div class="input-field col s6">
+        <select id="table">
+            <option disabled selected>-- Choose your Table --</option>
+            <option value="\App\Entity\Actu">Actu</option>
+            <option value="\App\Entity\Artist">Artist</option>
+            <option value="\App\Entity\Event">Event</option>
+            <option value="\App\Entity\Product">Product</option>
+            <option value="\App\Entity\User">User</option>
+        </select>
+    </div>
+    <div class="input-field col s6">
+        
+    </div>
+</div>
+
+<div id="eRow" class="row">
+    <div class="input-field col s6" id="eData"></div>
+    <div class="input-field col s6" id="joinEData"></div>
+</div>
+
+
+</form>
+
+{% block javascripts %}
+    <script>
+    
+    /***** INIT SELECT MATERIALIZE *****/   
+    document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('select');
+    var instances = M.FormSelect.init(elems);
+    });
+
+    /***** FUNCTION ONSELECT *****/
+    $('#table').change(function () {
+            var entity = $('#table option:selected').val();
+            console.log(entity);
+            var data = {
+            name: "value",
+            value: entity
+            };
+
+            $.post("{{ path('admin_ajax') }}", data, function (string) {
+                console.log(string)
+                $('#eData').html(" ")
+                for (let index = 0; index < string.length; index++) {
+                    const element = string[index];
+                    $('#eData').append('<p><label><input type="checkbox"/><span>'+element+'</span></label></p>')
+                }
+
+            })
+    })
+
+    $('#joinTable').change(function () {
+            var joinEntity = $('#joinTable option:selected').val();
+            console.log(joinEntity);
+            var data = {
+            name: "value",
+            value: joinEntity
+            };
+            $.post("{{ path('admin_ajax') }}", data, function (joinString) {
+                console.log(joinString)
+                $('#joinEData').html(" ");
+                for (let index = 0; index < joinString.length; index++) {
+                    const joinElement = joinString[index];
+                    $('#joinEData').append('<p><label><input type="checkbox"/><span>'+joinElement+'</span></label></p>')
+                }
+
+                
+            })
+    })
+
+
+    </script>
+   
+{% endblock %}
