@@ -22,10 +22,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
  */
 class AdminController extends AbstractController {
 
-    private $args = [];
-    private $entity;
-    private $joinEntity;
-
     /**
      * @Route("/", name="admin_index", methods={"GET"})
      */
@@ -73,13 +69,11 @@ class AdminController extends AbstractController {
         
         $enti = $request -> request -> get('value');
 
-        $class = new $enti;
+        $entity = new $enti;
 
-        if(method_exists($class, "getCollection"));
+        $arrayValues = $enti -> Collection ->getValues();
 
-        $collection = $class -> getCollection();
-
-        var_dump($collection);die;
+        var_dump($arrayValues);die;
 
         $entityManager= $this -> getDoctrine() -> getManager();
         $entity = $entityManager->getClassMetadata($enti)->getColumnNames();
