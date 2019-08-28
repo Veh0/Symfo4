@@ -2,7 +2,7 @@
 
 <div class="row">
     <div class="input-field col s6">
-        <select id="table">
+        <select id="table" class="browser-default">
             <option disabled selected>-- Choose your Table --</option>
             <option value="\App\Entity\Actu">Actu</option>
             <option value="\App\Entity\Artist">Artist</option>
@@ -11,8 +11,10 @@
             <option value="\App\Entity\User">User</option>
         </select>
     </div>
-    <div class="input-field col s6">
-        
+    <div class="input-field col s6" id="hidden-select">
+        <select id="joinTable" class="browser-default">
+
+        </select>
     </div>
 </div>
 
@@ -22,16 +24,15 @@
 </div>
 
 
+
 </form>
+
+<button id="submit-dql" class="btn">Search</button>
 
 {% block javascripts %}
     <script>
     
-    /***** INIT SELECT MATERIALIZE *****/   
-    document.addEventListener('DOMContentLoaded', function() {
-    var elems = document.querySelectorAll('select');
-    var instances = M.FormSelect.init(elems);
-    });
+    
 
     /***** FUNCTION ONSELECT *****/
     $('#table').change(function () {
@@ -45,10 +46,26 @@
             $.post("{{ path('admin_ajax') }}", data, function (string) {
                 console.log(string)
                 $('#eData').html(" ")
-                for (let index = 0; index < string.length; index++) {
-                    const element = string[index];
-                    $('#eData').append('<p><label><input type="checkbox"/><span>'+element+'</span></label></p>')
+                
+                for (let index = 0; index < string[0].length; index++) {
+                    const element = string[0][index];
+                    $('#eData').append('<p><label><input class="checkData" type="checkbox" value="a.'+element+'"/><span>'+element+'</span></label></p>')
                 }
+                if (string[1].length != 0) {
+
+                    $('#joinTable').html(" ")
+                    $('#joinTable').append("<option disabled selected>-- Choose your Join Table --</option>")
+                    
+                    for (let index = 0; index < string[1].length; index++) {
+                        const mappedElement = string[1][index];
+                        console.log(mappedElement)
+                        $('#joinTable').append('<option value="'+mappedElement.name+'">'+mappedElement.name+'</option>');
+                    } 
+                    } else {
+                        $('#joinTable').html(" ")
+
+                }
+                
 
             })
     })
@@ -56,22 +73,39 @@
     $('#joinTable').change(function () {
             var joinEntity = $('#joinTable option:selected').val();
             console.log(joinEntity);
-            var data = {
+            var joinData = {
             name: "value",
             value: joinEntity
             };
-            $.post("{{ path('admin_ajax') }}", data, function (joinString) {
+            $.post("{{ path('admin_ajax_join') }}", joinData, function (joinString) {
                 console.log(joinString)
                 $('#joinEData').html(" ");
-                for (let index = 0; index < joinString.length; index++) {
-                    const joinElement = joinString[index];
-                    $('#joinEData').append('<p><label><input type="checkbox"/><span>'+joinElement+'</span></label></p>')
+                for (let i = 0; i < joinString[0].length; i++) {
+                    const joinElement = joinString[0][i];
+                    console.log(joinElement)
+                    $('#joinEData').append('<p><label><input class="checkData" type="checkbox" value="b.'+joinElement+'"/><span>'+joinElement+'</span></label></p>')
                 }
 
                 
             })
     })
 
+    $('#submit-dql').click(function() {
+        var checkData = {
+            name: "value",
+            value: $('.checkData:checked').serialize()
+        };
+
+        $.post("{{ path('admin_ajax_data') }}", checkData, function(dataString) {
+
+        }) 
+    })
+
+    /***** INIT SELECT MATERIALIZE *****/   
+    document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('select');
+    var instances = M.FormSelect.init(elems);
+    });
 
     </script>
    

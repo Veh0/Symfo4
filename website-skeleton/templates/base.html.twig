@@ -67,7 +67,7 @@
                 }
 
                 .hidden {
-                    display: none;
+                    display: none!important;
                 }
 
                 #drop-it-down {
@@ -76,6 +76,10 @@
             .rotation {
                 transform: rotate(90deg);
                 transition-duration: .6s
+            }
+
+            select {
+                display: block!important
             }
             </style>
         {% endblock %}

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c705ecb72123add9f9f4b133cf98b1f4",
+    "content-hash": "5dff739f1e9c496a1e81b25fcf5f1c6d",
     "packages": [
         {
             "name": "curl/curl",
@@ -4343,16 +4343,16 @@
         },
         {
             "name": "symfony/property-info",
-            "version": "v4.3.3",
+            "version": "v4.3.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/property-info.git",
-                "reference": "0fb251c0e06ddc5f25b63470461bb333aab46de5"
+                "reference": "29546235b37f7bd279c763314cd4c962aedd1e6d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/property-info/zipball/0fb251c0e06ddc5f25b63470461bb333aab46de5",
-                "reference": "0fb251c0e06ddc5f25b63470461bb333aab46de5",
+                "url": "https://api.github.com/repos/symfony/property-info/zipball/29546235b37f7bd279c763314cd4c962aedd1e6d",
+                "reference": "29546235b37f7bd279c763314cd4c962aedd1e6d",
                 "shasum": ""
             },
             "require": {
@@ -4365,7 +4365,7 @@
                 "symfony/dependency-injection": "<3.4"
             },
             "require-dev": {
-                "doctrine/annotations": "~1.0",
+                "doctrine/annotations": "~1.7",
                 "phpdocumentor/reflection-docblock": "^3.0|^4.0",
                 "symfony/cache": "~3.4|~4.0",
                 "symfony/dependency-injection": "~3.4|~4.0",
@@ -4415,7 +4415,7 @@
                 "type",
                 "validator"
             ],
-            "time": "2019-07-23T11:21:36+00:00"
+            "time": "2019-08-26T08:26:39+00:00"
         },
         {
             "name": "symfony/routing",

@@ -5,7 +5,42 @@
 {% block body %}
     <h1>Yo !</h1>
 
-    {% include "admin/_form.html.twig" %}
+    <form method="POST" id="admin_form">
+
+        <div class="row">
+            <div class="input-field col s6">
+                <select id="table" class="browser-default">
+                    <option disabled selected value="">-- Choose your Table --</option>
+                    <option value="\App\Entity\Actu">Actu</option>
+                    <option value="\App\Entity\Artist">Artist</option>
+                    <option value="\App\Entity\Event">Event</option>
+                    <option value="\App\Entity\Product">Product</option>
+                    <option value="\App\Entity\User">User</option>
+                </select>
+            </div>
+            <div class="input-field col s6" id="hidden-select">
+                <select id="joinTable" class="browser-default">
+        
+                </select>
+            </div>
+        </div>
+        
+        <div id="eRow" class="row">
+            <div class="input-field col s6" id="eData"></div>
+            <div class="input-field col s6" id="joinEData"></div>
+        </div>
+        
+        
+        
+        </form>
+
+
+        <button id="submit-dql" class="btn">Search</button>
+        
+
+        <div id="search-container"></div>
+
+
 
     {# {% for a in event_artist %}
         <h2>{{ dump(a) }}</h2>
@@ -17,3 +52,101 @@
     {% endfor %} #}
 
 {% endblock %}
+
+{% block javascripts %}
+            <script>
+            
+            
+        
+            /***** FUNCTION ONSELECT *****/
+            $('#table').change(function () {
+                    var entity = $('#table option:selected').val();
+                    console.log(entity);
+                    var data = {
+                    name: "value",
+                    value: entity
+                    };
+        
+                    $.post("{{ path('admin_ajax') }}", data, function (string) {
+                        console.log(string)
+                        $('#eData').html(" ")
+                        
+                        for (let index = 0; index < string[0].length; index++) {
+                            const element = string[0][index];
+                            $('#eData').append('<p><label><input class="checkData" type="checkbox" value="a.'+element+'"/><span>'+element+'</span></label></p>')
+                        }
+                        if (string[1].length != 0) {
+        
+                            $('#joinTable').html(" ")
+                            $('#joinTable').append("<option disabled selected value=''>-- Choose your Join Table --</option>")
+                            
+                            for (let index = 0; index < string[1].length; index++) {
+                                const mappedElement = string[1][index];
+                                console.log(mappedElement)
+                                $('#joinTable').append('<option value="'+mappedElement.name+'">'+mappedElement.name+'</option>');
+                            } 
+                            } else {
+                                $('#joinTable').html(" ")
+                                $('#joinEData').html(" ")
+        
+                        }
+                        
+        
+                    })
+            })
+        
+            $('#joinTable').change(function () {
+                    var joinEntity = $('#joinTable option:selected').val();
+                    console.log(joinEntity);
+                    var joinData = {
+                    name: "value",
+                    value: joinEntity
+                    };
+                    $.post("{{ path('admin_ajax_join') }}", joinData, function (joinString) {
+                        console.log(joinString)
+                        $('#joinEData').html(" ");
+                        for (let i = 0; i < joinString[0].length; i++) {
+                            const joinElement = joinString[0][i];
+                            console.log(joinElement)
+                            $('#joinEData').append('<p><label><input class="checkData" type="checkbox" value="b.'+joinElement+'"/><span>'+joinElement+'</span></label></p>')
+                        }
+        
+                        
+                    })
+            })
+        
+            $('#submit-dql').click(function() {
+                var cb = [];
+                var entity = $('#table option:selected').val()
+                var joinEntity = $('#joinTable option:selected').val()
+                cb.push(entity)
+                cb.push(joinEntity)
+                
+                $.each($('.checkData:checked'), function() {
+                cb.push($(this).val()); 
+                });
+                
+                console.log(cb)
+                var checkData = {
+                    name: "value",
+                    value: cb
+                };
+
+                $.post("{{ path('admin_ajax_data') }}", checkData, function(dataString) {
+                    for (let index = 0; index < dataString.length; index++) {
+                        const dataElement = dataString[index];
+                        $('#search-container').apprend("<p><pre>"+dataElement[0]+"</pre><p>")
+                        }
+                    })
+                    
+                })
+        
+            /***** INIT SELECT MATERIALIZE *****/   
+            document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('select');
+            var instances = M.FormSelect.init(elems);
+            });
+        
+            </script>
+           
+        {% endblock %}
