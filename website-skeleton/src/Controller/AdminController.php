@@ -88,8 +88,11 @@ class AdminController extends AbstractController {
         $enti = $request -> request -> get('value');
 
 
-        $enti = "App\Entity\\".ucfirst(substr($enti, 0, -1));
+        
 
+
+            $enti = "App\Entity\\".ucfirst(substr($enti, 0, -1));
+        
         $this -> joinTable = $enti;
 
         $entity = new $enti;
@@ -108,7 +111,7 @@ class AdminController extends AbstractController {
             foreach ($arrayProperties as $key ) {
             # code...
                 if (strpos($key -> getDocComment(), 'mappedBy')) {
-                $arrayCollec[] = $key; 
+                $arrayCollec[] = $key;
                 }    
             }
         }
@@ -129,11 +132,13 @@ class AdminController extends AbstractController {
     public function ajaxCheckData(Request $request, AdminRepository $admin) {
         
         $variable = $request -> request -> get('value');
-        
+
         $table = $variable[0];
         unset($variable[0]);
         $joinTable = $variable[1];
         unset($variable[1]);
+        $groupby = $variable[2];
+        unset($variable[2]);
 
         foreach ($variable as $key => $value) {
             # code...
@@ -147,9 +152,9 @@ class AdminController extends AbstractController {
         $entityManager= $this -> getDoctrine() -> getManager();
 
         if ($joinTable == "") {
-            $search = $admin -> toDQL($entityManager, $table, $args);
+            $search = $admin -> toDQL($entityManager, $table, $args, $groupby);
         } else {
-            $search = $admin -> toJoinDQL($entityManager, $table, $joinTable, $args);
+            $search = $admin -> toJoinDQL($entityManager, $table, $joinTable, $args, $groupby);
         }
 
 

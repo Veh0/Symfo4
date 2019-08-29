@@ -2,6 +2,9 @@
 
 namespace App\Hello;
 
+use App\Entity\Command;
+use App\Entity\User;
+
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
@@ -35,14 +38,14 @@ class UserVoter extends Voter {
         }
 
         // you know $subject is a Post object, thanks to supports
-        /** @var Post $post */
-        $post = $subject;
+        /** @var Command $post */
+        $cmd = $subject;
 
         switch ($attribute) {
             case self::DELETE:
-                return $this->canDelete($post, $user);
+                return $this->canDelete($user);
             case self::UPDATE:
-                return $this->canUpdate($post, $user);
+                return $this->canUpdate($cmd, $user);
         }
 
         throw new \LogicException('This code should not be reached!');
@@ -62,4 +65,3 @@ class UserVoter extends Voter {
     }
 }
 
-}

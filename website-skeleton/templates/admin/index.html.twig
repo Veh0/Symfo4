@@ -18,7 +18,7 @@
                     <option value="\App\Entity\User">User</option>
                 </select>
             </div>
-            <div class="input-field col s6" id="hidden-select">
+            <div class="input-field col s6 hidden" id="hidden-select">
                 <select id="joinTable" class="browser-default">
         
                 </select>
@@ -30,7 +30,14 @@
             <div class="input-field col s6" id="joinEData"></div>
         </div>
         
-        
+        <div class="row">
+            <div class="input-field col s6 hidden" id="hidden-group">
+
+            </div>
+            <div class="input-field col s6 hidden" id="hidden-order">
+
+            </div>
+        </div>
         
         </form>
 
@@ -61,22 +68,25 @@
             /***** FUNCTION ONSELECT *****/
             $('#table').change(function () {
                     var entity = $('#table option:selected').val();
-                    console.log(entity);
                     var data = {
                     name: "value",
                     value: entity
                     };
         
                     $.post("{{ path('admin_ajax') }}", data, function (string) {
-                        console.log(string)
+
                         $('#eData').html(" ")
                         
                         for (let index = 0; index < string[0].length; index++) {
                             const element = string[0][index];
-                            $('#eData').append('<p><label><input class="checkData" type="checkbox" value="a.'+element+'"/><span>'+element+'</span></label></p>')
+                            if (element == "id") {
+                                $('#eData').append('<p><label><input disabled checked class="checkData" type="checkbox" value="a.'+element+'"/><span>'+element+'</span></label></p>')
+                            } else {
+                                $('#eData').append('<p><label><input class="checkData" type="checkbox" value="a.'+element+'"/><span>'+element+'</span></label></p>')
+                            }
                         }
                         if (string[1].length != 0) {
-        
+                            $('#hidden-select').removeClass("hidden")
                             $('#joinTable').html(" ")
                             $('#joinTable').append("<option disabled selected value=''>-- Choose your Join Table --</option>")
                             
@@ -86,6 +96,7 @@
                                 $('#joinTable').append('<option value="'+mappedElement.name+'">'+mappedElement.name+'</option>');
                             } 
                             } else {
+                                $('#hidden-select').addClass("hidden")
                                 $('#joinTable').html(" ")
                                 $('#joinEData').html(" ")
         
@@ -97,20 +108,52 @@
         
             $('#joinTable').change(function () {
                     var joinEntity = $('#joinTable option:selected').val();
-                    console.log(joinEntity);
+
+                var ordered = []
+                $.each($('.checkData:selected'), function () {
+                    console.log($(this).val())
+                    ordered.push($(this).val())
+                })
+
+                var disabled = []
+                $.each($('.checkData:disabled'), function() {
+                    disabled.push($(this).val())
+                })
                     var joinData = {
                     name: "value",
                     value: joinEntity
                     };
                     $.post("{{ path('admin_ajax_join') }}", joinData, function (joinString) {
+                        console.log(disabled)
                         console.log(joinString)
                         $('#joinEData').html(" ");
                         for (let i = 0; i < joinString[0].length; i++) {
                             const joinElement = joinString[0][i];
                             console.log(joinElement)
-                            $('#joinEData').append('<p><label><input class="checkData" type="checkbox" value="b.'+joinElement+'"/><span>'+joinElement+'</span></label></p>')
+                            if (joinElement == 'id') {
+                                $('#joinEData').append('<p><label><input disabled checked class="checkData" type="checkbox" value="b.'+joinElement+'"/><span>'+joinElement+'</span></label></p>')
+                            } else {
+                              $('#joinEData').append('<p><label><input class="checkData" type="checkbox" value="b.'+joinElement+'"/><span>'+joinElement+'</span></label></p>')  
+                            }
+                            
                         }
-        
+                        $('#hidden-group').html(" ")
+                        $('#hidden-group').removeClass("hidden")
+                        if (disabled[1] == null) {
+                            disabled[1] = 'b.id'
+                        }
+
+                        $('#hidden-group').append("<select id='groupBy' class='browser-default'><option disabled selected>-- Group By --</option><option value='"+disabled[0]+"'>"+$('#table option:selected').html()+"</option><option value='"+disabled[1]+"'>"+$('#joinTable option:selected').html()+"</option></select>")
+                        $('#hidden-order').html(" ")
+                        $('#hidden-order').removeClass("hidden")
+                        console.log(ordered)
+                        $('#hidden-order').append("<select id='orderBy' class='browser-default'><option disabled selected>-- Order By --</option>")
+
+                            $('#orderBy').append("<option value='"+orderElement+"'>"+orderElement+"</option>")
+
+                        $('#hidden-order').append("</select>")
+                        
+
                         
                     })
             })
@@ -119,9 +162,10 @@
                 var cb = [];
                 var entity = $('#table option:selected').val()
                 var joinEntity = $('#joinTable option:selected').val()
+                var groupby = $('#groupBy option:selected').val()
                 cb.push(entity)
                 cb.push(joinEntity)
-                
+                cb.push(groupby)
                 $.each($('.checkData:checked'), function() {
                 cb.push($(this).val()); 
                 });
@@ -133,13 +177,19 @@
                 };
 
                 $.post("{{ path('admin_ajax_data') }}", checkData, function(dataString) {
+                    $('#search-container').html(" ")
                     for (let index = 0; index < dataString.length; index++) {
                         const dataElement = dataString[index];
-                        $('#search-container').apprend("<p><pre>"+dataElement[0]+"</pre><p>")
+                        $('#search-container').append("<table class='table' id='tableN"+index+"'><tbody>")
+                        $.each(dataElement, function(k, v){
+                            $('#tableN'+index).append("<tr><th>"+k+"</th><td>"+v+"</td></tr>")
+                        })
+                        $('#search-container').append("</tbody></table><hr>")
                         }
                     })
                     
                 })
+
         
             /***** INIT SELECT MATERIALIZE *****/   
             document.addEventListener('DOMContentLoaded', function() {
