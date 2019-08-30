@@ -12,7 +12,12 @@ class AdminRepository {
 
         $args = implode(",", $array);
 
-        $request = 'SELECT '.$args.' FROM '.$table1.' a JOIN a.'.$table2.' b GROUP BY '.$groupBy;
+        $request = 'SELECT '.$args.' FROM '.$table1.' a JOIN a.'.$table2.' b';
+
+        if ($groupBy == "") {
+            # code...
+            $request .=  'GROUP BY '.$groupBy;
+        }
 
         if($orderBy != null) {
             $ad = ($ad != null) ? $ad : "ASC" ;
