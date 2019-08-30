@@ -31,11 +31,9 @@
         </div>
         
         <div class="row">
-            <div class="input-field col s6 hidden" id="hidden-order">
-
-            </div>
+            
             <div class="input-field col s6 hidden" id="hidden-group">
-
+                <select id='groupBy' class='browser-default'></select>
             </div>
         </div>
         
@@ -44,6 +42,28 @@
 
         <button id="submit-dql" class="btn">Search</button>
         
+        <form method="POST" id="search_form">
+            <div class="row">
+                <div class="input-field col s6 hidden" id="hidden-order">
+                    <select id="orderBy" class="browser-default"></select>
+                </div>
+                <div class="input-field hidden row" id="hidden-ad">
+                    <div class="inline col s3">
+                        <label>
+                          <input name="ad" type="radio" value="asc" />
+                          <span>ASC</span>
+                        </label>
+                    </div>
+                      <div class="inline col s3">
+
+                        <label>
+                          <input name="ad" type="radio" value="desc"/>
+                          <span>DESC</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </form>
 
         <div id="search-container"></div>
 
@@ -101,37 +121,11 @@
                                 $('#joinEData').html(" ")
         
                         }
-                        $('#hidden-order').html(" ")
-                        $('#hidden-order').removeClass("hidden")
-                        $('#hidden-order').append("<select id='orderBy' class='browser-default'><option disabled selected>-- Order By --</option>")
-                        $('.checkData').click(function () {
-                            var item = $(this).val();;
-                            console.log(item);
-                            if (!$('.checkData').prop('checked')) {
-                                console.log("nope")
-                                $(this).prop("checked", true)
-                                $('#orderBy').append("<option class='option_order' value='"+$(this).val()+"'>"+$(this).val()+"</option>");
-                                
-                                
-                            } else {
-                                console.log("yo")
-                                $(this).prop("checked", false)
-                                $('.option_order[value="'+item+'"]').remove();
-                            }
-                            
-                            
-                            
-                            /* $.each($('.option_order'), function () {
-                                if($('.option_order').val() == item) {
-                                    console.log("yo")
-                                    $('.option_order[value="'+item+'"]').remove();
-                                } else {
-                                    $('#orderBy').append("<option class='option_order' value='"+$(this).val()+"'>"+$(this).val()+"</option>");
-                                }
-                            })    */
-                        })
 
-                        $('#hidden-order').append("</select>")
+                        $('#groupBy').html(" ")
+                        $('#hidden-group').removeClass("hidden")
+
+                        $('#groupBy').append("<option disabled>-- Group By --</option><option value='a.id' selected>"+$('#table option:selected').html()+"</option>") 
                         
         
                     })
@@ -164,22 +158,10 @@
                             }
                             
                         }
-                        $('#hidden-group').html(" ")
-                        $('#hidden-group').removeClass("hidden")
-                        if (disabled[1] == null) {
-                            disabled[1] = 'b.id'
-                        }
 
-                        $('#hidden-group').append("<select id='groupBy' class='browser-default'><option disabled selected>-- Group By --</option><option value='"+disabled[0]+"'>"+$('#table option:selected').html()+"</option><option value='"+disabled[1]+"'>"+$('#joinTable option:selected').html()+"</option></select>")
-                        
-                        
-                        $('.checkData').click(function () {
-                            console.log($(this).val())
-                            var item = $(this).val();
-                            console.log(item)
-                            $('#orderBy').append("<option value='"+$(this).val()+"'>"+$(this).val()+"</option>")
-                            $('option[value="'+item+'"]').toggle();
-                        })
+                        $('#hidden-group').removeClass("hidden")
+                        $('#groupBy').html("")
+                        $('#groupBy').append("<option disabled selected>-- Group By --</option><option value='a.id'>"+$('#table option:selected').html()+"</option><option value='b.id'>"+$('#joinTable option:selected').html()+"</option>")                
 
                         
                     })
@@ -213,10 +195,66 @@
                         })
                         $('#search-container').append("</tbody></table><hr>")
                         }
+
+                        $('#hidden-order').removeClass('hidden')
+                        $('#orderBy').html("<option value='' disabled selected>-- ORDER BY --</option>")
+                        for (let i = 3; i < cb.length; i++) {
+                            const ordered = cb[i];
+                            $('#orderBy').append("<option value='"+ordered+"'>"+ordered+"</option>") 
+                        }
+                            
+                        
+                        
                     })
                     
                 })
 
+        $('#orderBy').change(function (){
+            $('#hidden-ad').removeClass('hidden')
+            
+            })
+            
+            $('input[name="ad"]').click(function() {
+                var order = $('#orderBy option:selected').val()
+                var ad = $(this).val()
+                console.log(ad)
+                var cb = [];
+                var entity = $('#table option:selected').val()
+                var joinEntity = $('#joinTable option:selected').val()
+                var groupby = $('#groupBy option:selected').val()
+                cb.push(entity)
+                cb.push(joinEntity)
+                cb.push(groupby)
+                cb.push(order)
+                cb.push(ad)
+                $.each($('.checkData:checked'), function() {
+                cb.push($(this).val()); 
+                });
+            var orderData = {
+                name : "value",
+                value: cb
+            }
+            console.log(cb)
+            $.post("{{ path('admin_ajax_order') }}", orderData, function (orderString) {
+                $('#search-container').html(" ")
+                    for (let index = 0; index < orderString.length; index++) {
+                        const orderElement = orderString[index];
+                        $('#search-container').append("<table class='table' id='tableN"+index+"'><tbody>")
+                        $.each(orderElement, function(k, v){
+                            $('#tableN'+index).append("<tr><th>"+k+"</th><td>"+v+"</td></tr>")
+                        })
+                        $('#search-container').append("</tbody></table><hr>")
+                        }
+
+
+            })
+
+        })
+
+
+        $('#orderBy').click(function () {
+            console.log("yo")
+        })
         
             /***** INIT SELECT MATERIALIZE *****/   
             document.addEventListener('DOMContentLoaded', function() {

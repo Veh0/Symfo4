@@ -161,4 +161,49 @@ class AdminController extends AbstractController {
         return new JsonResponse($search);
     }
 
+    /**
+     * @Route("/ajax/order", name="admin_ajax_order", methods={"GET", "POST"})
+     */
+    public function ajaxOrderData(Request $request, AdminRepository $admin) {
+        
+        $variable = $request -> request -> get('value');
+
+        $table = $variable[0];
+        unset($variable[0]);
+        $joinTable = $variable[1];
+        unset($variable[1]);
+        $groupby = $variable[2];
+        unset($variable[2]);
+        
+        $orderby = $variable[3];
+        if (strpos($orderby, "_")) {
+            $orderby = str_replace('_', '', ucwords($orderby, '_'));
+            $orderby = lcfirst($orderby);
+         }
+        unset($variable[3]);
+        $ad = $variable[4];
+        unset($variable[4]);
+
+        foreach ($variable as $key => $value) {
+            # code...
+            if (strpos($value, "_")) {
+               $value = str_replace('_', '', ucwords($value, '_'));
+               $value = lcfirst($value);
+            }
+            $args[] = $value;
+        }
+
+
+        $entityManager= $this -> getDoctrine() -> getManager();
+
+        if ($joinTable == "") {
+            $search = $admin -> toDQL($entityManager, $table, $args, $groupby, $orderby, $ad);
+        } else {
+            $search = $admin -> toJoinDQL($entityManager, $table, $joinTable, $args, $groupby, $orderby, $ad);
+        }
+
+
+        return new JsonResponse($search);
+    }
+
 }

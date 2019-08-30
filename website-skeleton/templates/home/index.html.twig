@@ -9,11 +9,7 @@
 </style>
 
 <div class="example-wrapper">
-    <h1>{{hello}} 
-        {% if app.user %}
-            {{ app.user.username}}
-        {% endif %}
-    </h1>
+    <h1>Hello World</h1>
     <div class="carousel carousel-slider" style="height:500px">
     {% for actu in actus %}
     <div class="carousel-item" style="background-image: url('{{actu.img}}'); background-size: cover">  
