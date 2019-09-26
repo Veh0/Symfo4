@@ -4,18 +4,25 @@
 
 {% block body %}
     <h1>Yo !</h1>
-
-    <form method="POST" id="admin_form">
+    <p><a id="chart" class="grey-text text-darken-4" style="cursor: pointer">Request Charts<i id="chart_drop-it-down" class="material-icons right">keyboard_arrow_right</i></a></p>
+    <hr>
+    <p><a id="request" class="grey-text text-darken-4" style="cursor: pointer">Request Dashboard<i id="request_drop-it-down" class="material-icons right">keyboard_arrow_right</i></a></p>
+    
+    <form method="POST" id="admin_form" class="hidden">
 
         <div class="row">
             <div class="input-field col s6">
                 <select id="table" class="browser-default">
                     <option disabled selected value="">-- Choose your Table --</option>
-                    <option value="\App\Entity\Actu">Actu</option>
-                    <option value="\App\Entity\Artist">Artist</option>
-                    <option value="\App\Entity\Event">Event</option>
-                    <option value="\App\Entity\Product">Product</option>
+                    <option value="\App\Entity\AccountFollow">AccountFollow</option>
+                    <option value="\App\Entity\Album">Album</option>
+                    <option value="\App\Entity\Comment">Comment</option>
+                    <option value="\App\Entity\Jaime">Like</option>
+                    <option value="\App\Entity\Picture">Picture</option>
+                    <option value="\App\Entity\Tag">Tag</option>
                     <option value="\App\Entity\User">User</option>
+
+
                 </select>
             </div>
             <div class="input-field col s6 hidden" id="hidden-select">
@@ -40,7 +47,7 @@
         </form>
 
 
-        <button id="submit-dql" class="btn">Search</button>
+        <button id="submit-dql" class="btn hidden">Search</button>
         
         <form method="POST" id="search_form">
             <div class="row">
@@ -63,6 +70,15 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                    <div class="input-field col s6 hidden" id="hidden-where">
+                        <select id="where" class="browser-default"></select>
+                    </div>
+                    <div class="input-field col s6 hidden" id="hidden-param">
+                              <input id="param" name="param" type="text"/>
+                              <label for="param">Parameter</label>
+                    </div>                    
+                </div>
         </form>
 
         <div id="search-container"></div>
@@ -83,11 +99,21 @@
 {% block javascripts %}
             <script>
             
-            
+            // ** DROP IT DOWN **//
+            $('#request').click(function() {
+                $('#request_drop-it-down').toggleClass('rotation')
+                $('#admin_form').toggleClass('hidden')
+            })
+
+            $('#chart').click(function() {
+                $('#chart_drop-it-down').toggleClass('rotation')
+                
+            })
         
             /***** FUNCTION ONSELECT *****/
             $('#table').change(function () {
                     var entity = $('#table option:selected').val();
+                    
                     var data = {
                     name: "value",
                     value: entity
@@ -127,6 +153,7 @@
 
                         $('#groupBy').append("<option disabled selected value=''>-- Group By --</option><option value='a.id'>"+$('#table option:selected').html()+"</option>") 
                         
+                        $('#submit-dql').removeClass('hidden')
         
                     })
             })
@@ -161,7 +188,7 @@
 
                         $('#hidden-group').removeClass("hidden")
                         $('#groupBy').html("")
-                        $('#groupBy').append("<option disabled selected>-- Group By --</option><option value='a.id'>"+$('#table option:selected').html()+"</option><option value='b.id'>"+$('#joinTable option:selected').html()+"</option>")                
+                        $('#groupBy').append("<option disabled selected value=''>-- Group By --</option><option value='a.id'>"+$('#table option:selected').html()+"</option><option value='b.id'>"+$('#joinTable option:selected').html()+"</option>")                
 
                         
                     })
@@ -202,6 +229,13 @@
                             const ordered = cb[i];
                             $('#orderBy').append("<option value='"+ordered+"'>"+ordered+"</option>") 
                         }
+
+                        $('#hidden-where').removeClass('hidden')
+                        $('#where').html("<option value='' disabled selected>-- WHERE --</option>")
+                        for (let i = 3; i < cb.length; i++) {
+                            const where = cb[i];
+                            $('#where').append("<option value='"+where+"'>"+where+"</option>") 
+                        }
                             
                         
                         
@@ -209,9 +243,8 @@
                     
                 })
 
-        $('#orderBy').change(function (){
+        $('#orderBy').on('change', function (){
             $('#hidden-ad').removeClass('hidden')
-            
             })
             
             $('input[name="ad"]').click(function() {
@@ -249,8 +282,51 @@
 
             })
 
+
         })
 
+        $('#where').change(function() {
+            $('#hidden-param').removeClass('hidden')
+        })
+
+        $('#param').keyup(function() {
+            var order = $('#orderBy option:selected').val()
+            var where = $('#where option:selected').val()
+            var param = $(this).val()
+                var ad = $('input[name="ad"]:checked').val()
+                console.log(ad)
+                var cb = [];
+                var entity = $('#table option:selected').val()
+                var joinEntity = $('#joinTable option:selected').val()
+                var groupby = $('#groupBy option:selected').val()
+                cb.push(entity)
+                cb.push(joinEntity)
+                cb.push(where)
+                cb.push(param)
+                cb.push(groupby)
+                cb.push(order)
+                cb.push(ad)
+                $.each($('.checkData:checked'), function() {
+                cb.push($(this).val()); 
+                });
+            var orderData = {
+                name : "value",
+                value: cb
+            }
+            if($('#param').val() != "") {
+                $.post("{{ path('admin_ajax_where') }}", orderData, function (orderString) {
+                    $('#search-container').html(" ")
+                        for (let index = 0; index < orderString.length; index++) {
+                            const orderElement = orderString[index];
+                            $('#search-container').append("<table class='table' id='tableN"+index+"'><tbody>")
+                            $.each(orderElement, function(k, v){
+                            $('#tableN'+index).append("<tr><th>"+k+"</th><td>"+v+"</td></tr>")
+                        })
+                        $('#search-container').append("</tbody></table><hr>")
+                    }
+                })
+            }
+        })
 
         $('#orderBy').click(function () {
             console.log("yo")

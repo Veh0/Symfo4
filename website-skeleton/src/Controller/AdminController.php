@@ -26,7 +26,7 @@ class AdminController extends AbstractController {
 
 
     /**
-     * @Route("/", name="admin_index", methods={"GET", "POST"})
+     * @Route("/", name="admin", methods={"GET", "POST"})
      */
     public function index(Request $request) : Response {
 
@@ -200,6 +200,56 @@ class AdminController extends AbstractController {
             $search = $admin -> toDQL($entityManager, $table, $args, $groupby, $orderby, $ad);
         } else {
             $search = $admin -> toJoinDQL($entityManager, $table, $joinTable, $args, $groupby, $orderby, $ad);
+        }
+
+
+        return new JsonResponse($search);
+    }
+
+    /**
+     * @Route("/ajax/where", name="admin_ajax_where", methods={"GET", "POST"})
+     */
+    public function ajaxWhereData(Request $request, AdminRepository $admin) {
+        
+        $variable = $request -> request -> get('value');
+
+
+        $table = $variable[0];
+        unset($variable[0]);
+        $joinTable = $variable[1];
+        unset($variable[1]);
+        $where = $variable[2];
+        unset($variable[2]);
+        $param = $variable[3];
+        unset($variable[3]);
+        $groupby = $variable[4];
+        unset($variable[4]);
+        
+        $orderby = $variable[5];
+        if (strpos($orderby, "_")) {
+            $orderby = str_replace('_', '', ucwords($orderby, '_'));
+            $orderby = lcfirst($orderby);
+         }
+        unset($variable[5]);
+        $ad = $variable[6];
+        unset($variable[6]);
+
+        foreach ($variable as $key => $value) {
+            # code...
+            if (strpos($value, "_")) {
+               $value = str_replace('_', '', ucwords($value, '_'));
+               $value = lcfirst($value);
+            }
+            $args[] = $value;
+        }
+
+
+        $entityManager= $this -> getDoctrine() -> getManager();
+
+        if ($joinTable == "") {
+            $search = $admin -> toDQL($entityManager, $table, $args, $groupby, $orderby, $ad, $where, $param);
+        } else {
+            $search = $admin -> toJoinDQL($entityManager, $table, $joinTable, $args, $groupby, $orderby, $ad, $where, $param);
         }
 
 
